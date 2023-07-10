@@ -318,12 +318,7 @@ function animate() {
 }
 // animate()
 
-let keys = {
-  w: { pressed: false },
-  a: { pressed: false },
-  s: { pressed: false },
-  d: { pressed: false }
-};
+
 
 let lastKey = 0;
 
