@@ -206,7 +206,7 @@ function animate() {
     }
   }
 
-  if (keys.w.pressed && lastKey === 'w') {
+  if (keys.w.pressed && lastKey === 38) {
     player.animate = true
     player.image = player.sprites.up
 
@@ -233,7 +233,7 @@ function animate() {
       movables.forEach((movable) => {
         movable.position.y += 3
       })
-  } else if (keys.a.pressed && lastKey === 'a') {
+  } else if (keys.a.pressed && lastKey === 37) {
     player.animate = true
     player.image = player.sprites.left
 
@@ -260,7 +260,7 @@ function animate() {
       movables.forEach((movable) => {
         movable.position.x += 3
       })
-  } else if (keys.s.pressed && lastKey === 's') {
+  } else if (keys.s.pressed && lastKey === 40) {
     player.animate = true
     player.image = player.sprites.down
 
@@ -287,7 +287,7 @@ function animate() {
       movables.forEach((movable) => {
         movable.position.y -= 3
       })
-  } else if (keys.d.pressed && lastKey === 'd') {
+  } else if (keys.d.pressed && lastKey === 39) {
     player.animate = true
     player.image = player.sprites.right
 
@@ -318,42 +318,42 @@ function animate() {
 }
 // animate()
 
-let lastKey = ''
+let lastKey = 0
 window.addEventListener('keydown', (e) => {
   switch (e.key) {
-    case 'w':
+    case 38:
       keys.w.pressed = true
-      lastKey = 'w'
+      lastKey = 38
       break
-    case 'a':
+    case 37:
       keys.a.pressed = true
-      lastKey = 'a'
+      lastKey = 37
       break
 
-    case 's':
+    case 40:
       keys.s.pressed = true
-      lastKey = 's'
+      lastKey = 40
       break
 
-    case 'd':
+    case 39:
       keys.d.pressed = true
-      lastKey = 'd'
+      lastKey = 39
       break
   }
 })
 
 window.addEventListener('keyup', (e) => {
   switch (e.key) {
-    case 'w':
+    case 38:
       keys.w.pressed = false
       break
-    case 'a':
+    case 37:
       keys.a.pressed = false
       break
-    case 's':
+    case 40:
       keys.s.pressed = false
       break
-    case 'd':
+    case 39:
       keys.d.pressed = false
       break
   }
