@@ -318,46 +318,53 @@ function animate() {
 }
 // animate()
 
-let lastKey = 0
+let keys = {
+  w: { pressed: false },
+  a: { pressed: false },
+  s: { pressed: false },
+  d: { pressed: false }
+};
+
+let lastKey = 0;
+
 window.addEventListener('keydown', (e) => {
   switch (e.key) {
-    case 38:
-      keys.w.pressed = true
-      lastKey = 38
-      break
-    case 37:
-      keys.a.pressed = true
-      lastKey = 37
-      break
-
-    case 40:
-      keys.s.pressed = true
-      lastKey = 40
-      break
-
-    case 39:
-      keys.d.pressed = true
-      lastKey = 39
-      break
+    case 'ArrowUp':
+      keys.w.pressed = true;
+      lastKey = 38;
+      break;
+    case 'ArrowLeft':
+      keys.a.pressed = true;
+      lastKey = 37;
+      break;
+    case 'ArrowDown':
+      keys.s.pressed = true;
+      lastKey = 40;
+      break;
+    case 'ArrowRight':
+      keys.d.pressed = true;
+      lastKey = 39;
+      break;
   }
-})
+});
 
 window.addEventListener('keyup', (e) => {
   switch (e.key) {
-    case 38:
-      keys.w.pressed = false
-      break
-    case 37:
-      keys.a.pressed = false
-      break
-    case 40:
-      keys.s.pressed = false
-      break
-    case 39:
-      keys.d.pressed = false
-      break
+    case 'ArrowUp':
+      keys.w.pressed = false;
+      break;
+    case 'ArrowLeft':
+      keys.a.pressed = false;
+      break;
+    case 'ArrowDown':
+      keys.s.pressed = false;
+      break;
+    case 'ArrowRight':
+      keys.d.pressed = false;
+      break;
   }
-})
+});
+
 
 let clicked = false
 addEventListener('click', () => {
