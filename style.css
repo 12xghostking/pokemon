@@ -1,14 +1,251 @@
-body{
-    background-color:black;
-    margin:0  
+:root {
+  --primary: #38BDF8;
+  --primary-dark: #0284C7;
+  --accent: #FACC15;
+  --success: #4ADE80;
+  --danger: #EF4444;
+  --bg-dark: #0F172A;
+  --bg-card: #1E293B;
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
+  --font-pixel: 'Press Start 2P', monospace, sans-serif;
 }
-.flash{
-    background-color:black;
-    position:absolute;
-    top:0;
-    right:0;
-    bottom:0;
-    left:0;
-    opacity:0;
-    pointer-events:none;
+
+* {
+  box-sizing: border-box;
+  font-family: var(--font-pixel);
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #050811;
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Responsive Main Game Wrapper */
+#gameContainer {
+  position: relative;
+  width: 100%;
+  max-width: 1024px;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8), 0 0 0 4px #1E293B;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Screen transition black flash */
+#overlappingDiv {
+  background-color: black;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 90;
+}
+
+/* HUD Buttons */
+.hud-btn {
+  background: rgba(15, 23, 42, 0.85);
+  color: #F8FAFC;
+  border: 2px solid #334155;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 9px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  backdrop-filter: blur(4px);
+}
+
+.hud-btn:hover {
+  background: #38BDF8;
+  color: #0F172A;
+  border-color: #38BDF8;
+  transform: translateY(-1px);
+}
+
+.hud-btn:active {
+  transform: translateY(1px);
+}
+
+/* Battle UI Containers */
+#userInterface {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.battle-hud-box {
+  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  border: 4px #000 solid;
+  border-radius: 8px;
+  padding: 10px 14px;
+  position: absolute;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+}
+
+/* HP and Exp Bars */
+.hp-bar-bg {
+  height: 8px;
+  background-color: #CBD5E1;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #64748B;
+}
+
+.hp-bar-fill {
+  height: 100%;
+  background-color: #22C55E;
+  transition: width 0.35s ease-out, background-color 0.35s ease;
+}
+
+.exp-bar-bg {
+  height: 5px;
+  background-color: #94A3B8;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.exp-bar-fill {
+  height: 100%;
+  background-color: #3B82F6;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* Bottom Action & Dialogue Panel */
+.battle-bottom-panel {
+  background-color: white;
+  height: 140px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-top: 4px black solid;
+  display: flex;
+  pointer-events: auto;
+  z-index: 25;
+}
+
+.battle-action-btn {
+  border: none;
+  background: #F8FAFC;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s;
+  padding: 8px;
+}
+
+.battle-action-btn:hover {
+  background-color: #E2E8F0;
+}
+
+.battle-action-btn:active {
+  background-color: #CBD5E1;
+}
+
+/* Dialogue Box */
+#dialogueBox {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  padding: 16px 20px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: black;
+  display: none;
+  cursor: pointer;
+  z-index: 30;
+}
+
+#dialogueBox::after {
+  content: '▼';
+  position: absolute;
+  bottom: 12px;
+  right: 18px;
+  animation: blink 0.8s infinite;
+  font-size: 10px;
+  color: #64748B;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Custom Scrollbar for Modals */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0F172A;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #38BDF8;
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Mobile viewport adjustments */
+@media (max-width: 768px) {
+  #gameContainer {
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .hud-btn {
+    font-size: 7px;
+    padding: 4px 6px;
+  }
 }

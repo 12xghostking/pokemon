@@ -1,183 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Pokémon Adventure: Complete Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
-    rel="stylesheet"
-  />
-  <style>
-    * {
-      font-family: 'Press Start 2P', cursive;
-    }
-
-    body {
-      background-color: black;
-    }
-
-    h1 {
-      margin: 0;
-    }
-
-    button {
-      border: 0;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    button:hover {
-      background-color: #ddd;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
+<body>
+  <div id="gameContainer">
+    <!-- Transition fade overlay -->
+    <div id="overlappingDiv"></div>
 
-<div style="display: inline-block; position: relative">
-  <div
-    id="overlappingDiv"
-    style="
-      background-color: black;
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 10;
-    "
-  ></div>
+    <!-- Main Game Canvas -->
+    <canvas id="gameCanvas" width="1024" height="576"></canvas>
 
-  <canvas></canvas>
-
-  <div id="userInterface" style="display: none">
-    <!-- Represents health bar of draggle (enemy) -->
-    <div
-      style="
-        background-color: white;
-        width: 250px;
-        position: absolute;
-        top: 50px;
-        left: 50px;
-        border: 4px black solid;
-        padding: 12px;
-      "
-    >
-      <h1 style="font-size: 16px">Draggle</h1>
-      <div style="position: relative">
-        <div
-          style="height: 5px; background-color: #ccc; margin-top: 10px"
-        ></div>
-        <div
-          id="enemyHealthBar"
-          style="
-            height: 5px;
-            background-color: green;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-          "
-        ></div>
+    <!-- Battle User Interface Overlay -->
+    <div id="userInterface" style="display: none;">
+      <!-- Enemy Status Card (Top-Left) -->
+      <div class="battle-hud-box" style="top: 36px; left: 40px; width: 280px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <h1 id="enemyName" style="font-size: 13px; margin: 0; color: #0F172A;">Draggle</h1>
+          <span id="enemyLevel" style="font-size: 10px; color: #475569; font-weight: bold;">Lv. 5</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 9px; margin-bottom: 4px;">
+          <span id="enemyStatus" style="display: none; background: #EF4444; color: white; padding: 1px 4px; border-radius: 3px;"></span>
+          <span id="enemyHpText" style="font-family: monospace; font-size: 10px; margin-left: auto;">HP: 100%</span>
+        </div>
+        <div class="hp-bar-bg">
+          <div id="enemyHealthBar" class="hp-bar-fill" style="width: 100%;"></div>
+        </div>
       </div>
-    </div>
 
-    <!-- Represents health bar of emby (us) -->
-    <div
-      style="
-        background-color: white;
-        width: 250px;
-        position: absolute;
-        top: 330px;
-        right: 50px;
-        border: 4px black solid;
-        padding: 12px;
-      "
-    >
-      <h1 style="font-size: 16px">Emby</h1>
-      <div style="position: relative">
-        <div
-          style="height: 5px; background-color: #ccc; margin-top: 10px"
-        ></div>
-        <div
-          id="playerHealthBar"
-          style="
-            height: 5px;
-            background-color: green;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-          "
-        ></div>
+      <!-- Player Status Card (Right-Middle) -->
+      <div class="battle-hud-box" style="top: 290px; right: 40px; width: 300px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <h1 id="playerName" style="font-size: 13px; margin: 0; color: #0F172A;">Emby</h1>
+          <span id="playerLevel" style="font-size: 10px; color: #475569; font-weight: bold;">Lv. 5</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 9px; margin-bottom: 4px;">
+          <span id="playerStatus" style="display: none; background: #EF4444; color: white; padding: 1px 4px; border-radius: 3px;"></span>
+          <span id="playerHpText" style="font-family: monospace; font-size: 10px; margin-left: auto;">20 / 20 HP</span>
+        </div>
+        <div class="hp-bar-bg">
+          <div id="playerHealthBar" class="hp-bar-fill" style="width: 100%;"></div>
+        </div>
+        <!-- EXP Bar -->
+        <div class="exp-bar-bg">
+          <div id="playerExpBar" class="exp-bar-fill" style="width: 0%;"></div>
+        </div>
       </div>
-    </div>
 
-    <div
-      style="
-        background-color: white;
-        height: 140px;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        border-top: 4px black solid;
-        display: flex;
-      "
-    >
-      <div
-        id="dialogueBox"
-        style="
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          background-color: white;
-          padding: 12px;
-          display: none;
-          cursor: pointer;
-        "
-      >
-        sdkfjlsdajl
-      </div>
-      <div
-        id="attacksBox"
-        style="
-          width: 66.66%;
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-        "
-      ></div>
-      <div
-        style="
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 33.33%;
-          border-left: 4px black solid;
-        "
-      >
-        <h1 id="attackType" style="font-size: 16px">Attack Type</h1>
+      <!-- Bottom Battle Control Panel -->
+      <div class="battle-bottom-panel">
+        <!-- Dialogue / Message Box -->
+        <div id="dialogueBox">Ready for battle!</div>
+
+        <!-- 1. Primary Action Menu (FIGHT, BAG, PARTY, RUN) -->
+        <div id="battleActionMenu" style="width: 66.66%; display: grid; grid-template-columns: repeat(2, 1fr); border-right: 4px black solid;">
+          <button id="battleFightBtn" class="battle-action-btn" style="border-right: 2px solid #CBD5E1; border-bottom: 2px solid #CBD5E1;">
+            ⚔️ FIGHT
+          </button>
+          <button id="battleBagBtn" class="battle-action-btn" style="border-bottom: 2px solid #CBD5E1;">
+            🎒 BAG
+          </button>
+          <button id="battlePokemonBtn" class="battle-action-btn" style="border-right: 2px solid #CBD5E1;">
+            👥 POKÉMON
+          </button>
+          <button id="battleRunBtn" class="battle-action-btn">
+            🏃 RUN
+          </button>
+        </div>
+
+        <!-- 2. Moves Selection Box (FIGHT selected) -->
+        <div id="attacksBox" style="width: 66.66%; display: none; grid-template-columns: repeat(2, 1fr); border-right: 4px black solid;">
+        </div>
+
+        <!-- 3. In-Battle Bag Sub-menu -->
+        <div id="battleBagSubmenu" style="width: 66.66%; display: none; overflow-y: auto; padding: 8px; border-right: 4px black solid;">
+        </div>
+
+        <!-- 4. In-Battle Party Switch Sub-menu -->
+        <div id="battlePartySubmenu" style="width: 66.66%; display: none; overflow-y: auto; padding: 8px; border-right: 4px black solid;">
+        </div>
+
+        <!-- Right Side: Move Type Info & Back Button -->
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 33.33%; padding: 12px; gap: 8px;">
+          <h1 id="attackType" style="font-size: 13px; text-align: center;">Battle Ready</h1>
+          <button id="battleBackBtn" style="display: none; padding: 6px 14px; background: #EF4444; color: white; border: none; border-radius: 4px; font-size: 10px; cursor: pointer;">
+            ↩ BACK
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"
-  integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-></script>
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"
-  integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-></script>
-<script src="data/audio.js"></script>
-<script src="data/battleZones.js"></script>
-<script src="data/collisions.js"></script>
-<script src="data/attacks.js"></script>
-<script src="data/monsters.js"></script>
-<script src="classes.js"></script>
-<script src="index.js"></script>
-<script src="battleScene.js"></script>
+
+  <!-- CDN Dependencies -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js" crossorigin="anonymous"></script>
+
+  <!-- Legacy Data for full backward compatibility -->
+  <script src="data/audio.js"></script>
+  <script src="data/battleZones.js"></script>
+  <script src="data/collisions.js"></script>
+  <script src="data/attacks.js"></script>
+  <script src="data/monsters.js"></script>
+
+  <!-- Modular Game Data -->
+  <script src="src/data/typeChart.js"></script>
+  <script src="src/data/movesData.js"></script>
+  <script src="src/data/pokemonData.js"></script>
+  <script src="src/data/itemsData.js"></script>
+  <script src="src/data/worldAreas.js"></script>
+  <script src="src/data/trainersData.js"></script>
+  <script src="src/data/mapsData.js"></script>
+
+  <!-- Core State & Engines -->
+  <script src="src/core/gameState.js"></script>
+  <script src="src/engine/audioEngine.js"></script>
+  <script src="src/engine/catchEngine.js"></script>
+  <script src="src/engine/battleEngine.js"></script>
+  <script src="src/engine/battleTower.js"></script>
+  <script src="src/engine/mapManager.js"></script>
+
+  <!-- Graphics & Rendering -->
+  <script src="src/graphics/particleSystem.js"></script>
+  <script src="src/graphics/spriteRenderer.js"></script>
+
+  <!-- User Interface & Controls -->
+  <script src="src/ui/modalManager.js"></script>
+  <script src="src/ui/touchControls.js"></script>
+
+  <!-- Game Loops & Scene Logic -->
+  <script src="classes.js"></script>
+  <script src="battleScene.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>
